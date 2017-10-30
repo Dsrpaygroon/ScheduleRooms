@@ -45,8 +45,20 @@ public class RoomLists
         System.out.println(rooms);
         // Sorting algarithm for round 1 sorting
         ArrayList<String> round1 = codes;
+        sort1(codes, rooms);
     }
+
     public static ArrayList<ArrayList<String>> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms){
+        Collections.shuffle(codes);
+        for (int i = 0; i < codes.size(); i++){
+            if (codes.get(i).indexOf("a") >= 0){
+                System.out.println(codes.get(0));
+            }
+            else{
+                System.out.print("Nope: ");
+                System.out.println(codes.get(0));
+            }
+        }
         for (String code : codes){
             String schoolNum = code.substring(0,1);
             String value = code.substring(1);
@@ -56,9 +68,10 @@ public class RoomLists
             while (select == false){
                 if (rooms.get(x).indexOf(schoolNum) == -1){
                     if (rooms.get(x).indexOf(value) == -1){
-                        
+
                     }
                 }
+                select = true;
             }
         }
         return rooms;
