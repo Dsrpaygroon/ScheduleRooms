@@ -45,35 +45,31 @@ public class RoomLists
         System.out.println(rooms);
         // Sorting algarithm for round 1 sorting
         ArrayList<String> round1 = codes;
-        sort1(codes, rooms);
+        System.out.println(sort1(codes, rooms));
     }
 
-    public static ArrayList<ArrayList<String>> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms){
+    public static ArrayList<String> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms){
+        String alphabet = "abcdefghijklmnopqrstuvwxyz";
         Collections.shuffle(codes);
-        for (int i = 0; i < codes.size(); i++){
-            if (codes.get(i).indexOf("a") >= 0){
-                System.out.println(codes.get(0));
+        ArrayList<String> codesToSort = codes;
+        ArrayList<String> sortedCodes = new ArrayList<String>(0);
+        int i = 0;
+        while (sortedCodes.size() < codes.size()){
+            System.out.println(alphabet.substring(i,i+1));
+            for (int x = 0; x < codesToSort.size(); x++){
+                System.out.print(codes.get(x) + "... ");
+                if (codes.get(x).indexOf(alphabet.substring(i, i+1)) >= 0){
+                    sortedCodes.add(codes.get(x));
+                }
             }
-            else{
-                System.out.print("Nope: ");
-                System.out.println(codes.get(0));
-            }
+            i++;
         }
+        codes = sortedCodes;
         for (String code : codes){
             String schoolNum = code.substring(0,1);
             String value = code.substring(1);
-            boolean select = false;
-            Collections.shuffle(rooms);
             int x = 0;
-            while (select == false){
-                if (rooms.get(x).indexOf(schoolNum) == -1){
-                    if (rooms.get(x).indexOf(value) == -1){
-
-                    }
-                }
-                select = true;
-            }
         }
-        return rooms;
+        return codes;
     }
 }
