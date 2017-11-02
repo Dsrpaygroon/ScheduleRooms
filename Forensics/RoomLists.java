@@ -6,6 +6,7 @@ public class RoomLists
 {
     public static void main(int schools){
         ArrayList<ArrayList<String>> rooms = new ArrayList<ArrayList<String>>(0);
+        ArrayList<ArrayList<Integer>> roomPreference = new ArrayList<ArrayList<Integer>>(0);
         ArrayList<String> codes = new ArrayList<String>(0);
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         int total, schoolTotal, roomNum, codeNum;
@@ -36,19 +37,21 @@ public class RoomLists
             }
             int localRoomTotal = 0;
             rooms.add(new ArrayList<String>(0));
+            roomPreference.add(new ArrayList<Integer>(0));
             for (int c = 0; c < codeNum; c++){
                 localRoomTotal ++;
-                rooms.get(i).add(0,"TBP");                                 
+                rooms.get(i).add("TBP");
+                roomPreference.get(i).add(0);
             }
             System.out.println(localRoomTotal);
         }
         System.out.println(rooms);
         // Sorting algarithm for round 1 sorting
         ArrayList<String> round1 = codes;
-        System.out.println(sort1(codes, rooms));
+        System.out.println(sort1(codes, rooms, roomPreference));
     }
 
-    public static ArrayList<String> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms){
+    public static ArrayList<String> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference){
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         Collections.shuffle(codes);
         ArrayList<String> codesToSort = codes;
@@ -67,8 +70,18 @@ public class RoomLists
         codes = sortedCodes;
         for (String code : codes){
             String schoolNum = code.substring(0,1);
-            String value = code.substring(1);
-            int x = 0;
+            for (int r = 0; r < roomPreference.size(); r++){
+                int rating = 0;
+                for (String checking : rooms.get(r)){
+                    if (checking.indexOf(schoolNum) != -1){
+                        rating ++;
+                    }
+                }
+                ArrayList<Integer> testing = (ArrayList<Integer>)roomPreference.get(r);
+                for (int s = 0; s < roomPreference.get(r).size(); s++){
+                    testing.get(s) += rating;
+                }
+            }
         }
         return codes;
     }
