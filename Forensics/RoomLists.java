@@ -48,19 +48,20 @@ public class RoomLists
         System.out.println(rooms);
         // Sorting algarithm for round 1 sorting
         ArrayList<String> round1 = codes;
+        System.out.println();
+        System.out.println();
+        System.out.println();
         System.out.println(sort1(codes, rooms, roomPreference));
     }
 
-    public static ArrayList<String> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference){
+    public static ArrayList<ArrayList<Integer>> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference){
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         Collections.shuffle(codes);
         ArrayList<String> codesToSort = codes;
         ArrayList<String> sortedCodes = new ArrayList<String>(0);
         int i = 0;
         while (sortedCodes.size() < codes.size()){
-            System.out.println(alphabet.substring(i,i+1));
             for (int x = 0; x < codesToSort.size(); x++){
-                System.out.print(codes.get(x) + "... ");
                 if (codes.get(x).indexOf(alphabet.substring(i, i+1)) >= 0){
                     sortedCodes.add(codes.get(x));
                 }
@@ -68,21 +69,32 @@ public class RoomLists
             i++;
         }
         codes = sortedCodes;
+        System.out.print("Codes: ");
+        System.out.println(codes);
         for (String code : codes){
             String schoolNum = code.substring(0,1);
+            int[] roomList = new int[roomPreference.size()];
             for (int r = 0; r < roomPreference.size(); r++){
-                int rating = 0;
-                for (String checking : rooms.get(r)){
-                    if (checking.indexOf(schoolNum) != -1){
-                        rating ++;
-                    }
+                for (int j = 0; j < roomPreference.get(r).size(); j++){
+                if(((ArrayList<String>)rooms.get(r)).get(j).equals("TBP"))
+                roomList[r] = roomList[r] + 1;
                 }
-                ArrayList<Integer> testing = (ArrayList<Integer>)roomPreference.get(r);
-                for (int s = 0; s < roomPreference.get(r).size(); s++){
-                    testing.get(s) += rating;
+                System.out.println(roomList[r]);
+            }
+            for (int r = 0; r < roomPreference.size(); r++){
+                int roomRating = roomList[r];
+                if (roomPreference.get(r).indexOf(schoolNum) != -1){
+                    roomRating += 2;
+                }
+                for (int j = 0; j < roomPreference.get(r).size(); j++){
+                    int placeRating = roomRating;
+                    if (!((ArrayList<String>)rooms.get(r)).get(j).equals("TBP")){
+                        placeRating += 10;
+                    }
+                    ((ArrayList<Integer>)roomPreference.get(r)).set(j, placeRating);
                 }
             }
         }
-        return codes;
+        return roomPreference;
     }
 }
