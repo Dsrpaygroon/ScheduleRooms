@@ -51,7 +51,7 @@ public class RoomLists{
         System.out.println();
         System.out.println(sort1(codes, rooms, roomPreference));
     }
-
+    
     public static ArrayList<ArrayList<String>> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference){
         Scanner key = new Scanner(System.in);
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -68,6 +68,7 @@ public class RoomLists{
             q++;
         }
         codes = sortedCodes;
+        ArrayList<String> reSort = new ArrayList<String>(sortedCodes.size());
         System.out.print("Codes: ");
         System.out.println(codes);
         for (String code : codes){
@@ -156,8 +157,10 @@ public class RoomLists{
                             }
                         }
                     }
+                    p++;
                 }
-                codes.add(((ArrayList<String>)rooms.get(x)).get(y));
+                reSort.add(((ArrayList<String>)rooms.get(x)).get(y));
+                System.out.printf("Adding %s to list to place\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ((ArrayList<String>)rooms.get(x)).get(y));
                 ((ArrayList<String>)rooms.get(x)).set(y, code);
                 System.out.printf("%s, placed in room %d at place %d\n", code, x, y);
                 ((ArrayList<String>)rooms.get(x)).set(y, code);
@@ -172,6 +175,7 @@ public class RoomLists{
                 System.out.println();
             }
         }
+        System.out.println(reSort);
         return rooms;
     }
 }
