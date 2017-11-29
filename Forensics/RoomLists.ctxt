@@ -4,4 +4,6 @@ comment1.params=schools
 comment1.target=void\ main(int)
 comment2.params=codes\ rooms\ roomPreference
 comment2.target=java.util.ArrayList\ sort1(java.util.ArrayList,\ java.util.ArrayList,\ java.util.ArrayList)
-numComments=3
+comment3.params=code\ rooms\ roomPreference\ reSort
+comment3.target=java.util.ArrayList\ sort(java.lang.String,\ java.util.ArrayList,\ java.util.ArrayList,\ java.util.ArrayList)
+numComments=4

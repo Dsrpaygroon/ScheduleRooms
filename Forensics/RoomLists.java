@@ -51,7 +51,7 @@ public class RoomLists{
         System.out.println();
         System.out.println(sort1(codes, rooms, roomPreference));
     }
-    
+
     public static ArrayList<ArrayList<String>> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference){
         Scanner key = new Scanner(System.in);
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -71,111 +71,125 @@ public class RoomLists{
         ArrayList<String> reSort = new ArrayList<String>(sortedCodes.size());
         System.out.print("Codes: ");
         System.out.println(codes);
+
         for (String code : codes){
-            String schoolNum = code.substring(0,code.length()-1);
-            int[] roomList = new int[roomPreference.size()];
-            for (int r = 0; r < roomPreference.size(); r++){
-                for (int j = 0; j < roomPreference.get(r).size(); j++){
-                    if(((ArrayList<String>)rooms.get(r)).get(j).equals("TBP"))
-                        roomList[r] = roomList[r] + 1;
-                }
-            }
-            int max = -1;
-            for (int j = 0; j < roomList.length; j++){
-                if (roomList[j] > max)
-                    max = roomList[j];}
-            for (int j = 0; j < roomList.length; j++){
-                if (roomList[j] != max)
-                    roomList[j] = 1;
-                else
-                    roomList[j] = 0;
-            }
-            for (int r = 0; r < roomPreference.size(); r++){
-                int roomRating = roomList[r];
-                for (int j = 0; j < roomPreference.get(r).size(); j++){
-                    if (((ArrayList<String>)rooms.get(r)).get(j).substring(0,((ArrayList<String>)rooms.get(r)).get(j).length()-1).equals(schoolNum)){
-                        roomRating += 2;
-                    }
-                }
-                for (int j = 0; j < roomPreference.get(r).size(); j++){
-                    int placeRating = roomRating;
-                    if (!((ArrayList<String>)rooms.get(r)).get(j).equals("TBP")){
-                        placeRating += 10;
-                    }
-                    ((ArrayList<Integer>)roomPreference.get(r)).set(j, placeRating);
-                }
-            }
-            ArrayList<Integer> bestX = new ArrayList<Integer>(0);
-            ArrayList<Integer> bestY = new ArrayList<Integer>(0);
-            int rating = 0;
-            for (int j = 0; bestX.size() == 0; j++){
-                for (int r = 0; r < roomPreference.size(); r++){
-                    for (int c = 0; c < roomPreference.get(r).size(); c++){
-                        if (((ArrayList<Integer>)roomPreference.get(r)).get(c) == j){
-                            bestX.add(r);
-                            bestY.add(c);
-                        }
-                    }
-                }
-                rating = j;
-            }
-            if (rating < 2){
-                Random random = new Random();
-                int pick = random.nextInt(bestX.size());
-                System.out.printf("%s, placed in room %d at place %d with rating %d\n", code, bestX.get(pick), bestY.get(pick), rating);
-                ((ArrayList<String>)rooms.get(bestX.get(pick))).set(bestY.get(pick), code);
-                for (ArrayList<String> room : rooms){
-                    System.out.println(room);
-                }
-                System.out.println();
-                for (ArrayList<Integer> preference : roomPreference){
-                    System.out.println(preference);
-                }
-                key.next();
-                System.out.println();
-            }
-            else{
-                String letter = code.substring(code.length() - 1);
-                for (int i = 0; i < roomPreference.size(); i++){
-                    for (int j = 0; j < roomPreference.get(i).size(); j++){
-                        ((ArrayList<Integer>)roomPreference.get(i)).set(j, letter.compareTo(rooms.get(i).get(j).substring(rooms.get(i).get(j).length() - 1)));
-                        if ((((ArrayList<String>)rooms.get(i)).get(j).substring(0,((ArrayList<String>)rooms.get(i)).get(j).length()-1).equals(schoolNum)))
-                            ((ArrayList<Integer>)roomPreference.get(i)).set(j, ((ArrayList<Integer>)roomPreference.get(i)).get(j) + 10);
-                    }
-                }
-                boolean done = false;
-                int p = 0;
-                int x = -5;
-                int y = -5;
-                while (done == false){
-                    for (int i = 0; i < roomPreference.size(); i++){
-                        for (int j = 0; j < roomPreference.get(i).size(); j++){
-                            if (((ArrayList<Integer>)roomPreference.get(i)).get(j) == p){
-                                done = true;
-                                x = i;
-                                y = j;
-                            }
-                        }
-                    }
-                    p++;
-                }
-                reSort.add(((ArrayList<String>)rooms.get(x)).get(y));
-                System.out.printf("Adding %s to list to place\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ((ArrayList<String>)rooms.get(x)).get(y));
-                ((ArrayList<String>)rooms.get(x)).set(y, code);
-                System.out.printf("%s, placed in room %d at place %d\n", code, x, y);
-                ((ArrayList<String>)rooms.get(x)).set(y, code);
-                for (ArrayList<String> room : rooms){
-                    System.out.println(room);
-                }
-                System.out.println();
-                for (ArrayList<Integer> preference : roomPreference){
-                    System.out.println(preference);
-                }
-                key.next();
-                System.out.println();
-            }
+            sort(code, rooms, roomPreference, reSort);
+            reSort = rooms.get(rooms.size()-1);
+            rooms.remove(rooms.size()-1);
         }
         System.out.println(reSort);
+        for (String code : reSort){
+            sort(code, rooms, roomPreference, reSort);
+            rooms.remove(rooms.size()-1);
+        }
+        return rooms;
+    }
+
+    public static ArrayList<ArrayList<String>> sort(String code, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference, ArrayList<String> reSort){
+        Scanner key = new Scanner(System.in); 
+        String schoolNum = code.substring(0,code.length()-1);
+        int[] roomList = new int[roomPreference.size()];
+        for (int r = 0; r < roomPreference.size(); r++){
+            for (int j = 0; j < roomPreference.get(r).size(); j++){
+                if(((ArrayList<String>)rooms.get(r)).get(j).equals("TBP"))
+                    roomList[r] = roomList[r] + 1;
+            }
+        }
+        int max = -1;
+        for (int j = 0; j < roomList.length; j++){
+            if (roomList[j] > max)
+                max = roomList[j];}
+        for (int j = 0; j < roomList.length; j++){
+            if (roomList[j] != max)
+                roomList[j] = 1;
+            else
+                roomList[j] = 0;
+        }
+        for (int r = 0; r < roomPreference.size(); r++){
+            int roomRating = roomList[r];
+            for (int j = 0; j < roomPreference.get(r).size(); j++){
+                if (((ArrayList<String>)rooms.get(r)).get(j).substring(0,((ArrayList<String>)rooms.get(r)).get(j).length()-1).equals(schoolNum)){
+                    roomRating += 2;
+                }
+            }
+            for (int j = 0; j < roomPreference.get(r).size(); j++){
+                int placeRating = roomRating;
+                if (!((ArrayList<String>)rooms.get(r)).get(j).equals("TBP")){
+                    placeRating += 10;
+                }
+                ((ArrayList<Integer>)roomPreference.get(r)).set(j, placeRating);
+            }
+        }
+        ArrayList<Integer> bestX = new ArrayList<Integer>(0);
+        ArrayList<Integer> bestY = new ArrayList<Integer>(0);
+        int rating = 0;
+        for (int j = 0; bestX.size() == 0; j++){
+            for (int r = 0; r < roomPreference.size(); r++){
+                for (int c = 0; c < roomPreference.get(r).size(); c++){
+                    if (((ArrayList<Integer>)roomPreference.get(r)).get(c) == j){
+                        bestX.add(r);
+                        bestY.add(c);
+                    }
+                }
+            }
+            rating = j;
+        }
+        if (rating < 2){
+            Random random = new Random();
+            int pick = random.nextInt(bestX.size());
+            System.out.printf("%s, placed in room %d at place %d with rating %d\n", code, bestX.get(pick), bestY.get(pick), rating);
+            ((ArrayList<String>)rooms.get(bestX.get(pick))).set(bestY.get(pick), code);
+            for (ArrayList<String> room : rooms){
+                System.out.println(room);
+            }
+            System.out.println();
+            for (ArrayList<Integer> preference : roomPreference){
+                System.out.println(preference);
+            }
+            key.next();
+            System.out.println();
+        }
+        else{
+            String letter = code.substring(code.length() - 1);
+            for (int i = 0; i < roomPreference.size(); i++){
+                for (int j = 0; j < roomPreference.get(i).size(); j++){
+                    ((ArrayList<Integer>)roomPreference.get(i)).set(j, letter.compareTo(rooms.get(i).get(j).substring(rooms.get(i).get(j).length() - 1)));
+                    if ((((ArrayList<String>)rooms.get(i)).get(j).substring(0,((ArrayList<String>)rooms.get(i)).get(j).length()-1).equals(schoolNum)))
+                        ((ArrayList<Integer>)roomPreference.get(i)).set(j, ((ArrayList<Integer>)roomPreference.get(i)).get(j) + 10);
+                }
+            }
+            boolean done = false;
+            int p = 0;
+            int x = -5;
+            int y = -5;
+            while (done == false){
+                for (int i = 0; i < roomPreference.size(); i++){
+                    for (int j = 0; j < roomPreference.get(i).size(); j++){
+                        if (((ArrayList<Integer>)roomPreference.get(i)).get(j) == p){
+                            done = true;
+                            x = i;
+                            y = j;
+                        }
+                    }
+                }
+                p++;
+            }
+            reSort.add(((ArrayList<String>)rooms.get(x)).get(y));
+            System.out.printf("Adding %s to list to place\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ((ArrayList<String>)rooms.get(x)).get(y));
+            ((ArrayList<String>)rooms.get(x)).set(y, code);
+            System.out.printf("%s, placed in room %d at place %d\n", code, x, y);
+            ((ArrayList<String>)rooms.get(x)).set(y, code);
+            for (ArrayList<String> room : rooms){
+                System.out.println(room);
+            }
+            System.out.println();
+            for (ArrayList<Integer> preference : roomPreference){
+                System.out.println(preference);
+            }
+            key.next();
+            System.out.println();
+        }
+        rooms.add(reSort);
         return rooms;
     }
 }
