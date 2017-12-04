@@ -76,11 +76,12 @@ public class RoomLists{
             sort(code, rooms, roomPreference, reSort);
             reSort = rooms.get(rooms.size()-1);
             rooms.remove(rooms.size()-1);
-        }
-        System.out.println(reSort);
-        for (String code : reSort){
-            sort(code, rooms, roomPreference, reSort);
-            rooms.remove(rooms.size()-1);
+            while (reSort.size() > 0){
+                sort(reSort.get(0), rooms, roomPreference, reSort);
+                reSort = rooms.get(rooms.size()-1);
+                reSort.remove(0);
+                rooms.remove(rooms.size()-1);
+            }
         }
         return rooms;
     }
@@ -146,7 +147,6 @@ public class RoomLists{
             for (ArrayList<Integer> preference : roomPreference){
                 System.out.println(preference);
             }
-            key.next();
             System.out.println();
         }
         else{
@@ -175,10 +175,11 @@ public class RoomLists{
                 p++;
             }
             reSort.add(((ArrayList<String>)rooms.get(x)).get(y));
-            System.out.printf("Adding %s to list to place\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ((ArrayList<String>)rooms.get(x)).get(y));
+            System.out.printf("Adding %s to list to place", ((ArrayList<String>)rooms.get(x)).get(y));
             ((ArrayList<String>)rooms.get(x)).set(y, code);
             System.out.printf("%s, placed in room %d at place %d\n", code, x, y);
             ((ArrayList<String>)rooms.get(x)).set(y, code);
+            System.out.println(reSort);
             for (ArrayList<String> room : rooms){
                 System.out.println(room);
             }
