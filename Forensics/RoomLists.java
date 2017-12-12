@@ -20,8 +20,6 @@ public class RoomLists{
                     codes.add((i + 1) + alphabet.substring(c, c+1));
                 }
             }
-            System.out.println(codes);
-            System.out.println(total);
         }
         roomNum = total / 6;
         int overflow = total % 6;
@@ -44,16 +42,18 @@ public class RoomLists{
             System.out.println(localRoomTotal);
         }
         System.out.println(rooms);
-        // Sorting algarithm for round 1 sorting
-        ArrayList<String> round1 = codes;
+        ArrayList<ArrayList<String>> emptyRooms = rooms;
         System.out.println();
         System.out.println();
         System.out.println();
-        System.out.println(sort1(codes, rooms, roomPreference));
+        ArrayList<ArrayList<String>> round1 = sort1(codes, rooms, roomPreference);
+        System.out.println(round1);
+        System.out.println("Lets see if round 2 is working now:");
+        ArrayList<ArrayList<String>> round2 = sort2(roomPreference, round1, emptyRooms);
+        System.out.println(round2);
     }
 
     public static ArrayList<ArrayList<String>> sort1(ArrayList<String> codes, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference){
-        Scanner key = new Scanner(System.in);
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
         Collections.shuffle(codes);
         ArrayList<String> codesToSort = codes;
@@ -71,22 +71,67 @@ public class RoomLists{
         ArrayList<String> reSort = new ArrayList<String>(sortedCodes.size());
         System.out.print("Codes: ");
         System.out.println(codes);
-
+        ArrayList<int[]> pastPlacements = new ArrayList<int[]>(0);
+        int[] bla = new int[]{-1,-1};
+        pastPlacements.add(bla);
         for (String code : codes){
-            sort(code, rooms, roomPreference, reSort);
+            sort(code, rooms, roomPreference, reSort, pastPlacements);
             reSort = rooms.get(rooms.size()-1);
             rooms.remove(rooms.size()-1);
             while (reSort.size() > 0){
-                sort(reSort.get(0), rooms, roomPreference, reSort);
+                sort(reSort.get(0), rooms, roomPreference, reSort, pastPlacements);
                 reSort = rooms.get(rooms.size()-1);
+                int[] placement = new int[2];
+                for (int i = 0; i < rooms.size(); i++){
+                    if (rooms.get(i).indexOf(reSort.get(0)) > -1){
+                        placement[0] = i;
+                        placement[1] = rooms.get(i).indexOf(reSort.get(0)); 
+                    }
+                }
                 reSort.remove(0);
                 rooms.remove(rooms.size()-1);
             }
+            pastPlacements = new ArrayList<int[]>(0);
+            pastPlacements.add(bla);
         }
         return rooms;
     }
 
-    public static ArrayList<ArrayList<String>> sort(String code, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference, ArrayList<String> reSort){
+    public static ArrayList<ArrayList<String>> sort2(ArrayList<ArrayList<Integer>> roomPreference, ArrayList<ArrayList<String>> round1, ArrayList<ArrayList<String>> round2){
+        // Step one, sort first and last codes into, not the first and the last
+        ArrayList<String> codes = new ArrayList<String>(0);
+        for (int i = 0; i < round1.size(); i++){
+            for (int j = 0; j < round1.get(i).size(); j++){
+                if (j == 0 || j == round1.get(i).size()-1)
+                    codes.add(round1.get(i).get(j));
+            }
+        }
+        for (String code : codes){
+            int room = codes.indexOf(code)/2;
+            int[] roomList = new int[roomPreference.size()];
+            for (int r = 0; r < roomPreference.size(); r++){
+                for (int j = 0; j < roomPreference.get(r).size(); j++){
+                    if(((ArrayList<String>)round2.get(r)).get(j).equals("TBP"))
+                        roomList[r] = roomList[r] + 1;
+                }
+            }
+            int max = -1;
+            for (int j = 0; j < roomList.length; j++){
+                if (roomList[j] > max)
+                    max = roomList[j];}
+            for (int j = 0; j < roomList.length; j++){
+                if (roomList[j] != max)
+                    roomList[j] = 1;
+                else
+                    roomList[j] = 0;
+            }
+        }
+        // Step two, sort the middle ones into, the rest
+
+        return round2;
+    }
+
+    public static void sort(String code, ArrayList<ArrayList<String>> rooms, ArrayList<ArrayList<Integer>> roomPreference, ArrayList<String> reSort, ArrayList<int[]> pastPlacements){
         Scanner key = new Scanner(System.in); 
         String schoolNum = code.substring(0,code.length()-1);
         int[] roomList = new int[roomPreference.size()];
@@ -140,14 +185,6 @@ public class RoomLists{
             int pick = random.nextInt(bestX.size());
             System.out.printf("%s, placed in room %d at place %d with rating %d\n", code, bestX.get(pick), bestY.get(pick), rating);
             ((ArrayList<String>)rooms.get(bestX.get(pick))).set(bestY.get(pick), code);
-            for (ArrayList<String> room : rooms){
-                System.out.println(room);
-            }
-            System.out.println();
-            for (ArrayList<Integer> preference : roomPreference){
-                System.out.println(preference);
-            }
-            System.out.println();
         }
         else{
             String letter = code.substring(code.length() - 1);
@@ -165,7 +202,7 @@ public class RoomLists{
             while (done == false){
                 for (int i = 0; i < roomPreference.size(); i++){
                     for (int j = 0; j < roomPreference.get(i).size(); j++){
-                        if (((ArrayList<Integer>)roomPreference.get(i)).get(j) == p){
+                        if (((ArrayList<Integer>)roomPreference.get(i)).get(j) == p && i != pastPlacements.get(0)[0] && j != pastPlacements.get(0)[1]){
                             done = true;
                             x = i;
                             y = j;
@@ -177,20 +214,10 @@ public class RoomLists{
             reSort.add(((ArrayList<String>)rooms.get(x)).get(y));
             System.out.printf("Adding %s to list to place", ((ArrayList<String>)rooms.get(x)).get(y));
             ((ArrayList<String>)rooms.get(x)).set(y, code);
-            System.out.printf("%s, placed in room %d at place %d\n", code, x, y);
+            System.out.printf("\n%s, placed in room %d at place %d with rating %d\n", code, x, y, p);
             ((ArrayList<String>)rooms.get(x)).set(y, code);
-            System.out.println(reSort);
-            for (ArrayList<String> room : rooms){
-                System.out.println(room);
-            }
-            System.out.println();
-            for (ArrayList<Integer> preference : roomPreference){
-                System.out.println(preference);
-            }
-            key.next();
-            System.out.println();
         }
         rooms.add(reSort);
-        return rooms;
     }
+
 }
